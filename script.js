@@ -1,14 +1,13 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
 import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyBgqPTJH-1w0mWvjzxrLtWkpyZVBuZc58M",
-    authDomain: "alltech-32bc5.firebaseapp.com",
-    projectId: "alltech-32bc5",
-    storageBucket: "alltech-32bc5.firebasestorage.app",
-    messagingSenderId: "554601939193",
-    appId: "1:554601939193:web:dfbc729b69110f0c3fe228"
+    apiKey: "AIzaSyAlYhdhZ_YfyTa-WIs4KATvom1BgAWA950",
+    authDomain: "lojasd-56373.firebaseapp.com",
+    projectId: "lojasd-56373",
+    storageBucket: "lojasd-56373.firebasestorage.app",
+    messagingSenderId: "682418925553",
+    appId: "1:682418925553:web:0340cf919495e444635e50"
 };
 
 const app = initializeApp(firebaseConfig);
