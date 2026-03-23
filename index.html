@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AllTech OS - Painel de Gerência</title>
+    <link rel="icon" type="image/svg+xml" href="All-Tech_1.svg">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen relative selection:bg-blue-500/30 selection:text-blue-200">
+
+    <div id="tela-login" class="fixed inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] bg-slate-950 z-[100] flex items-center justify-center p-4">
+        <div class="glass-panel p-10 rounded-[2.5rem] shadow-2xl shadow-blue-900/20 w-full max-w-md border-t-[4px] border-blue-500 animate-fade-in relative overflow-hidden">
+            <div class="absolute -top-32 -right-32 w-64 h-64 bg-blue-600/20 rounded-full blur-3xl"></div>
+            <div class="text-center mb-10 flex flex-col items-center relative z-10">
+                <div class="bg-slate-800 p-5 rounded-3xl shadow-inner border border-slate-700 mb-6">
+                    <img src="logo.png" alt="AllTech Logo" class="w-36 drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]">
+                </div>
+                <h2 class="text-3xl font-black text-white mb-1 tracking-tight">System Login</h2>
+                <p class="text-slate-400 font-medium text-sm">Painel de Gerenciamento AllTech</p>
+            </div>
+            <form id="form-login" class="space-y-5 relative z-10">
+                <div>
+                    <input type="email" id="login-user" required class="w-full bg-slate-900/50 border border-slate-700 p-4 rounded-2xl outline-none focus:bg-slate-800 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all font-medium text-white placeholder-slate-500" placeholder="E-mail de acesso">
+                </div>
+                <div>
+                    <input type="password" id="login-pass" required class="w-full bg-slate-900/50 border border-slate-700 p-4 rounded-2xl outline-none focus:bg-slate-800 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all font-medium text-white placeholder-slate-500" placeholder="Sua senha secreta">
+                </div>
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black p-4 rounded-2xl uppercase tracking-widest shadow-[0_0_20px_rgba(37,99,235,0.4)] hover:shadow-[0_0_30px_rgba(37,99,235,0.6)] hover:-translate-y-1 transition-all duration-300 mt-4">Acessar Sistema</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="tela-loading" class="hidden fixed inset-0 bg-slate-900 z-[90] flex flex-col items-center justify-center p-4">
+        <div class="glass-panel p-8 rounded-3xl shadow-2xl flex flex-col items-center animate-pulse">
+            <img src="logo.png" class="w-28 mb-6 drop-shadow-lg">
+            <p class="text-blue-400 font-black tracking-widest uppercase text-xs">Sincronizando Banco de Dados...</p>
+        </div>
+    </div>
+
+    <div id="app-completo" class="hidden">
+        <nav class="glass-panel border-b border-slate-800 sticky top-0 z-40 shadow-xl">
+            <div class="max-w-7xl mx-auto px-6 py-4 flex flex-col xl:flex-row justify-between items-center gap-4">
+                <div class="flex items-center gap-4">
+                    <div class="bg-slate-800 p-2 rounded-2xl border border-slate-700 shadow-inner">
+                        <img src="logo.png" alt="AllTech" class="h-8 w-auto">
+                    </div>
+                    <h1 class="text-white text-2xl font-black tracking-tighter drop-shadow-md">AllTech <span class="text-blue-500 font-medium">OS</span></h1>
+                </div>
+                <div class="flex flex-wrap justify-center items-center gap-2">
+                    <button onclick="mudarAba('inicio')" class="px-4 py-2.5 text-sm text-slate-300 rounded-xl font-bold hover:bg-slate-700/50 hover:text-white transition-all flex items-center gap-2 border border-transparent hover:border-slate-600">🏠 Início</button>
+                    <button onclick="mudarAba('os')" class="px-4 py-2.5 text-sm text-slate-300 rounded-xl font-bold hover:bg-slate-700/50 hover:text-white transition-all flex items-center gap-2 border border-transparent hover:border-slate-600">🔧 OS</button>
+                    <button onclick="mudarAba('produtos')" class="px-4 py-2.5 text-sm text-slate-300 rounded-xl font-bold hover:bg-slate-700/50 hover:text-white transition-all flex items-center gap-2 border border-transparent hover:border-slate-600">📦 Produtos</button>
+                    <button onclick="mudarAba('vendas')" class="px-4 py-2.5 text-sm text-slate-300 rounded-xl font-bold hover:bg-slate-700/50 hover:text-white transition-all flex items-center gap-2 border border-transparent hover:border-slate-600">💰 Vendas</button>
+                    <button onclick="mudarAba('clientes')" class="px-4 py-2.5 text-sm text-slate-300 rounded-xl font-bold hover:bg-slate-700/50 hover:text-white transition-all flex items-center gap-2 border border-transparent hover:border-slate-600">👥 Clientes</button>
+                    <button onclick="mudarAba('fiados')" class="px-4 py-2.5 text-sm text-slate-300 rounded-xl font-bold hover:bg-slate-700/50 hover:text-white transition-all flex items-center gap-2 border border-transparent hover:border-slate-600">📒 Fiados</button>
+                    <button onclick="mudarAba('caixa')" class="px-4 py-2.5 text-sm text-slate-300 rounded-xl font-bold hover:bg-slate-700/50 hover:text-white transition-all flex items-center gap-2 border border-transparent hover:border-slate-600">📊 Caixa</button>
+                    <div class="w-px h-6 bg-slate-700 mx-2 hidden md:block"></div>
+                    <button onclick="sairApp()" class="px-4 py-2.5 text-sm text-red-400 bg-red-500/10 border border-red-500/30 rounded-xl font-bold hover:bg-red-500 hover:text-white transition-all shadow-sm">Sair</button>
+                </div>
+            </div>
+        </nav>
+
+        <main class="max-w-7xl mx-auto p-4 md:p-6 mt-4 pb-24">
+            
+            <div id="aba-inicio" class="aba-conteudo ativa space-y-6 animate-fade-in">
+                <div class="bg-slate-800 p-6 rounded-3xl shadow-lg border border-slate-700 flex flex-col md:flex-row justify-between items-center gap-4 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                    <div class="flex items-center gap-4 relative z-10">
+                        <div class="bg-blue-500/20 border border-blue-500/30 p-4 rounded-2xl text-blue-400 text-xl shadow-[0_0_15px_rgba(59,130,246,0.2)]">📅</div>
+                        <h2 class="text-3xl font-black text-white tracking-tight">Agenda Diária</h2>
+                    </div>
+                    <input type="date" id="filtro-data" onchange="atualizarDashboard()" class="bg-slate-900 border border-slate-600 p-4 rounded-2xl font-bold outline-none text-slate-200 focus:ring-2 focus:ring-blue-500 transition-all cursor-pointer relative z-10">
+                </div>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-slate-800 p-8 rounded-[2rem] border border-blue-900/50 shadow-lg relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-600 to-cyan-400"></div>
+                        <h3 class="text-xl font-black text-blue-400 mb-6 flex items-center gap-3"><span class="bg-blue-500/20 text-blue-300 p-2 rounded-xl text-base">🚀</span> Para Fazer</h3>
+                        <div id="painel-fazer" class="space-y-4"></div>
+                    </div>
+                    <div class="bg-slate-800 p-8 rounded-[2rem] border border-emerald-900/50 shadow-lg relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 to-green-400"></div>
+                        <h3 class="text-xl font-black text-emerald-400 mb-6 flex items-center gap-3"><span class="bg-emerald-500/20 text-emerald-300 p-2 rounded-xl text-base">✅</span> Serviços Concluídos Hoje</h3>
+                        <div id="painel-feitos" class="space-y-4"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="aba-os" class="aba-conteudo space-y-6 animate-fade-in">
+                <div class="bg-slate-800 p-8 rounded-[2rem] shadow-xl border border-slate-700 relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-500 to-cyan-400 shadow-[0_0_15px_rgba(56,189,248,0.5)]"></div>
+                    <h2 class="text-2xl font-black mb-8 text-white tracking-tight">Abrir Nova OS / Orçamento</h2>
+                    <form id="form-os" class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div class="md:col-span-2">
+                                <label class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 block">Cliente Cadastrado</label>
+                                <select required id="os-cliente" class="w-full bg-slate-900 border border-slate-700 p-4 rounded-xl outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 font-medium transition-all text-slate-200"></select>
+                            </div>
+                            <div>
+                                <label class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 block">Data Agendada</label>
+                                <input required type="date" id="os-data" class="w-full bg-slate-900 border border-slate-700 p-4 rounded-xl font-medium outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all text-slate-200">
+                            </div>
+                        </div>
+
+                        <div class="p-6 bg-slate-900/50 rounded-2xl border border-dashed border-slate-600">
+                            <label class="block text-xs font-bold text-blue-400 mb-4 uppercase tracking-widest flex items-center gap-2"><span class="text-lg">🛒</span> Adicionar Peças / Produtos ao Orçamento</label>
+                            <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
+                                <div class="md:col-span-5 relative">
+                                    <input type="text" id="os-busca-prod-input" oninput="filtrarProdutosOrcamento(this.value)" placeholder="Pesquisar produto no estoque..." class="w-full bg-slate-800 border border-slate-600 p-4 rounded-xl outline-none focus:border-blue-500 transition-all text-white placeholder-slate-500">
+                                    <div id="os-sugestoes-produtos" class="absolute left-0 right-0 top-full mt-2 bg-slate-800 border border-slate-600 rounded-xl shadow-2xl z-50 hidden max-h-48 overflow-y-auto"></div>
+                                </div>
+                                <div class="md:col-span-2">
+                                    <input type="number" id="os-add-qtd" value="1" min="1" step="0.01" placeholder="QTD" class="w-full bg-slate-800 border border-slate-600 p-4 rounded-xl font-bold text-white text-center outline-none focus:border-blue-500 transition-all">
+                                </div>
+                                <div class="md:col-span-3 relative">
+                                    <span class="absolute left-4 top-4 font-bold text-slate-500">R$</span>
+                                    <input type="number" id="os-add-valor" step="0.01" placeholder="Valor Unit." class="w-full bg-slate-800 border border-slate-600 p-4 pl-12 rounded-xl font-black text-blue-400 outline-none focus:border-blue-500 transition-all">
+                                </div>
+                                <div class="md:col-span-2">
+                                    <button type="button" onclick="adicionarProdutoAoOrcamentoOS()" class="w-full bg-blue-600/20 border border-blue-500/50 text-blue-400 font-bold rounded-xl hover:bg-blue-600 hover:text-white transition-all shadow-md active:scale-95 h-full min-h-[56px]">ADD</button>
+                                </div>
+                            </div>
+                            <ul id="lista-orcamento-os" class="mt-4 space-y-2"></ul>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 items-end pt-2">
+                            <div class="md:col-span-2">
+                                <label class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 block">Descrição do Problema / Serviço</label>
+                                <input required id="os-descricao" placeholder="Relato do que precisa ser feito..." class="w-full bg-slate-900 border border-slate-700 p-4 rounded-xl outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all font-medium text-white">
+                            </div>
+                            <div>
+                                <label class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 block">Total Orçado</label>
+                                <div class="relative">
+                                    <span class="absolute left-4 top-4 font-black text-blue-500">R$</span>
+                                    <input required type="number" id="os-valor" step="0.01" placeholder="0.00" class="w-full bg-blue-900/10 border-2 border-blue-500/30 p-4 pl-12 rounded-xl font-black text-xl text-blue-400 outline-none focus:border-blue-400 transition-all">
+                                </div>
+                            </div>
+                            <button type="submit" class="bg-blue-600 text-white px-8 py-4 rounded-xl font-black tracking-widest shadow-[0_0_20px_rgba(37,99,235,0.4)] hover:shadow-[0_0_30px_rgba(37,99,235,0.6)] hover:-translate-y-1 transition-all duration-300 uppercase h-[60px]">CRIAR OS AGORA</button>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="bg-slate-800 p-3 rounded-2xl shadow-lg border border-slate-700 relative">
+                    <span class="absolute left-6 top-5 text-slate-500 text-lg">🔍</span>
+                    <input type="text" id="busca-os" oninput="atualizarTelaOS()" placeholder="Pesquisar em Ordens de Serviço..." class="w-full bg-slate-900 border-none p-4 pl-12 rounded-xl outline-none focus:ring-1 focus:ring-blue-500/50 transition-all font-medium text-white placeholder-slate-600">
+                </div>
+                <div id="lista-os" class="grid md:grid-cols-2 gap-6 mt-4"></div>
+            </div>
+
+            <div id="aba-produtos" class="aba-conteudo space-y-6 animate-fade-in">
+                <div class="bg-slate-800 p-8 rounded-[2rem] shadow-xl border border-slate-700 relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-orange-500 to-amber-400 shadow-[0_0_15px_rgba(249,115,22,0.5)]"></div>
+                    <h2 class="text-2xl font-black mb-8 text-white tracking-tight">Cadastro de Estoque</h2>
+                    <form id="form-produtos" class="flex flex-col lg:flex-row gap-5">
+                        <div class="flex-1">
+                            <input required id="prod-nome" placeholder="Nome do Produto / Peça" class="w-full bg-slate-900 border border-slate-700 p-4 rounded-xl outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all font-medium text-white placeholder-slate-500">
+                        </div>
+                        <div class="w-full lg:w-48 relative">
+                            <span class="absolute left-4 top-4 font-bold text-slate-500 text-sm">R$</span>
+                            <input required type="number" id="prod-custo" step="0.01" placeholder="Custo" class="w-full bg-slate-900 border border-slate-700 p-4 pl-10 rounded-xl font-medium outline-none focus:border-orange-500 transition-all text-white placeholder-slate-500">
+                        </div>
+                        <div class="w-full lg:w-48 relative">
+                            <span class="absolute left-4 top-4 font-bold text-orange-500 text-sm">R$</span>
+                            <input required type="number" id="prod-venda" step="0.01" placeholder="Venda" class="w-full bg-orange-900/10 border border-orange-500/30 p-4 pl-10 rounded-xl font-bold text-orange-400 outline-none focus:border-orange-400 transition-all placeholder-orange-700/50">
+                        </div>
+                        <button type="submit" class="bg-orange-600 text-white px-10 py-4 rounded-xl font-black shadow-[0_0_20px_rgba(234,88,12,0.4)] hover:shadow-[0_0_30px_rgba(234,88,12,0.6)] hover:-translate-y-1 transition-all duration-300 tracking-widest uppercase">Salvar</button>
+                    </form>
+                </div>
+                <div class="bg-slate-800 p-3 rounded-2xl shadow-lg border border-slate-700 relative">
+                    <span class="absolute left-6 top-5 text-slate-500 text-lg">🔍</span>
+                    <input type="text" id="busca-produtos" oninput="atualizarTelaProdutos()" placeholder="Pesquisar produtos no estoque..." class="w-full bg-slate-900 border-none p-4 pl-12 rounded-xl outline-none focus:ring-1 focus:ring-orange-500/50 transition-all font-medium text-white placeholder-slate-600">
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="lista-produtos"></div>
+            </div>
+
+            <div id="aba-vendas" class="aba-conteudo space-y-6 animate-fade-in">
+                <div class="bg-slate-800 p-8 rounded-[2rem] shadow-xl border border-slate-700 relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-emerald-400 to-teal-400 shadow-[0_0_15px_rgba(52,211,153,0.5)]"></div>
+                    <h2 class="text-2xl font-black mb-8 text-white tracking-tight">Nova Venda Balcão (PDV)</h2>
+                    <div class="mb-6">
+                        <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-widest">Selecionar Cliente</label>
+                        <select id="venda-cliente-selecionado" class="w-full bg-slate-900 border border-slate-700 p-4 rounded-xl outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all font-medium text-white cursor-pointer"></select>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-4 p-6 bg-slate-900/50 rounded-2xl border border-slate-700 shadow-inner">
+                        <div class="md:col-span-5 relative">
+                            <input type="text" id="venda-busca-prod-input" oninput="filtrarProdutosVenda(this.value)" placeholder="🔍 Buscar produto..." class="w-full bg-slate-800 border border-slate-600 p-4 rounded-xl outline-none focus:border-emerald-500 transition-all font-medium text-white placeholder-slate-500">
+                            <div id="venda-sugestoes-produtos" class="absolute left-0 right-0 top-full mt-2 bg-slate-800 border border-slate-600 rounded-xl shadow-2xl z-50 hidden max-h-56 overflow-y-auto"></div>
+                        </div>
+                        <div class="md:col-span-2">
+                            <input type="number" id="venda-qtd" value="1" min="1" step="0.01" class="w-full bg-slate-800 border border-slate-600 p-4 rounded-xl font-bold text-white text-center outline-none focus:border-emerald-500 transition-all" placeholder="QTD">
+                        </div>
+                        <div class="md:col-span-3 relative">
+                            <span class="absolute left-4 top-4 font-bold text-emerald-500 text-sm">R$</span>
+                            <input type="number" id="venda-valor" step="0.01" class="w-full bg-slate-800 border border-slate-600 p-4 pl-10 rounded-xl font-black text-emerald-400 outline-none focus:border-emerald-500 transition-all placeholder-emerald-700/50" placeholder="Valor Unit.">
+                        </div>
+                        <div class="md:col-span-2">
+                            <button onclick="adicionarItemCarrinhoVendaManual()" class="w-full bg-emerald-500/20 border border-emerald-500/50 text-emerald-400 p-4 rounded-xl font-bold hover:bg-emerald-600 hover:text-white shadow-md active:scale-95 transition-all">ADD ITEM</button>
+                        </div>
+                    </div>
+                    
+                    <div id="carrinho-venda" class="hidden mt-8">
+                        <div class="bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden shadow-lg">
+                            <table class="w-full text-left">
+                                <thead class="bg-slate-900/80 border-b border-slate-700">
+                                    <tr>
+                                        <th class="p-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Produto</th>
+                                        <th class="p-4 text-center text-xs font-bold text-slate-400 uppercase tracking-widest">QTD</th>
+                                        <th class="p-4 text-right text-xs font-bold text-slate-400 uppercase tracking-widest">Subtotal</th>
+                                        <th class="p-4"></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="lista-itens-carrinho" class="divide-y divide-slate-700/50"></tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="flex flex-col lg:flex-row justify-between items-center mt-6 gap-6 bg-emerald-900/10 p-6 rounded-2xl border border-emerald-500/20">
+                            <div>
+                                <p class="text-emerald-500 font-bold text-sm uppercase tracking-widest mb-1">Total da Compra</p>
+                                <div class="text-4xl font-black text-emerald-400 drop-shadow-[0_0_10px_rgba(52,211,153,0.3)]" id="total-carrinho">R$ 0,00</div>
+                            </div>
+                            <div class="flex flex-col sm:flex-row gap-4 w-full lg:w-auto items-end">
+                                <div class="w-full sm:w-auto relative">
+                                    <label class="block text-xs font-bold text-emerald-500 mb-2 uppercase tracking-widest">Valor Pago Agora</label>
+                                    <span class="absolute left-4 top-9 font-black text-emerald-600">R$</span>
+                                    <input type="number" id="venda-pago-hora" step="0.01" placeholder="0.00" class="w-full sm:w-48 bg-slate-900 border-2 border-emerald-500/30 p-4 pl-12 rounded-xl font-black text-xl text-white outline-none focus:border-emerald-400 transition-all">
+                                </div>
+                                <button onclick="finalizarVendaCarrinho()" class="w-full sm:w-auto bg-emerald-600 text-white px-10 py-4 rounded-xl font-black tracking-widest hover:-translate-y-1 shadow-[0_0_20px_rgba(16,185,129,0.4)] hover:shadow-[0_0_30px_rgba(16,185,129,0.6)] transition-all duration-300 h-[64px] uppercase">Finalizar Venda</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-slate-800 p-3 rounded-2xl shadow-lg border border-slate-700 relative">
+                    <span class="absolute left-6 top-5 text-slate-500 text-lg">🔍</span>
+                    <input type="text" id="busca-vendas" oninput="atualizarTelaVendas()" placeholder="Pesquisar no histórico de vendas..." class="w-full bg-slate-900 border-none p-4 pl-12 rounded-xl outline-none focus:ring-1 focus:ring-emerald-500/50 transition-all font-medium text-white placeholder-slate-600">
+                </div>
+                <div class="bg-slate-800 rounded-3xl shadow-lg border border-slate-700 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left whitespace-nowrap">
+                            <thead class="bg-slate-900/80 border-b border-slate-700">
+                                <tr>
+                                    <th class="p-5 text-xs font-bold text-slate-400 uppercase tracking-widest">Data</th>
+                                    <th class="p-5 text-xs font-bold text-slate-400 uppercase tracking-widest">Cliente</th>
+                                    <th class="p-5 text-xs font-bold text-slate-400 uppercase tracking-widest">Descrição dos Itens</th>
+                                    <th class="p-5 text-right text-xs font-bold text-slate-400 uppercase tracking-widest">Total Venda</th>
+                                    <th class="p-5 text-center"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="lista-vendas" class="divide-y divide-slate-700/50 text-slate-200"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="aba-clientes" class="aba-conteudo space-y-6 animate-fade-in">
+                <div class="bg-slate-800 p-8 rounded-[2rem] shadow-xl border border-slate-700 relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-indigo-500 to-purple-400 shadow-[0_0_15px_rgba(99,102,241,0.5)]"></div>
+                    <h2 class="text-2xl font-black mb-8 text-white tracking-tight">Cadastro de Novo Cliente</h2>
+                    <form id="form-clientes" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-widest">Nome Completo</label>
+                            <input required id="cliente-nome" placeholder="Ex: João da Silva" class="w-full bg-slate-900 border border-slate-700 p-4 rounded-xl outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all font-medium text-white placeholder-slate-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-widest">WhatsApp / Telefone</label>
+                            <input required id="cliente-telefone" placeholder="(00) 00000-0000" class="w-full bg-slate-900 border border-slate-700 p-4 rounded-xl outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all font-medium text-white placeholder-slate-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-widest">Endereço Completo</label>
+                            <input required id="cliente-endereco" placeholder="Rua, Número, Bairro" class="w-full bg-slate-900 border border-slate-700 p-4 rounded-xl outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all font-medium text-white placeholder-slate-500">
+                        </div>
+                        <button type="submit" class="bg-indigo-600 text-white px-8 py-4 rounded-xl font-black tracking-widest md:col-span-3 shadow-[0_0_20px_rgba(79,70,229,0.4)] hover:shadow-[0_0_30px_rgba(79,70,229,0.6)] hover:-translate-y-1 transition-all duration-300 mt-2 uppercase">Cadastrar Cliente</button>
+                    </form>
+                </div>
+                <div class="bg-slate-800 p-3 rounded-2xl shadow-lg border border-slate-700 relative">
+                    <span class="absolute left-6 top-5 text-slate-500 text-lg">🔍</span>
+                    <input type="text" id="busca-clientes" oninput="atualizarTelaClientes()" placeholder="Procurar clientes na base..." class="w-full bg-slate-900 border-none p-4 pl-12 rounded-xl outline-none focus:ring-1 focus:ring-indigo-500/50 transition-all font-medium text-white placeholder-slate-600">
+                </div>
+                <div class="grid md:grid-cols-3 gap-6" id="lista-clientes"></div>
+            </div>
+
+            <div id="aba-caixa" class="aba-conteudo space-y-6 animate-fade-in">
+                <div class="bg-slate-800 p-8 rounded-[2rem] shadow-xl border border-slate-700 relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-slate-400 to-slate-200"></div>
+                    <div class="flex items-center gap-4 mb-10">
+                        <span class="bg-slate-700/50 border border-slate-600 p-3.5 rounded-2xl text-2xl shadow-inner">📊</span>
+                        <h2 class="text-3xl font-black text-white tracking-tight">Painel Financeiro & Caixa</h2>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-center">
+                        <div onclick="abrirDetalhesCaixa('bruto')" class="cursor-pointer bg-slate-900/80 p-8 rounded-[2rem] border border-blue-500/20 shadow-[0_0_15px_rgba(59,130,246,0.05)] hover:border-blue-500/50 hover:shadow-[0_0_25px_rgba(59,130,246,0.15)] hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
+                            <div class="absolute -right-4 -top-4 text-blue-500/10 text-8xl group-hover:scale-110 transition-transform">📈</div>
+                            <p class="text-xs text-blue-400 font-black uppercase tracking-widest relative z-10">Vendas Brutas</p>
+                            <h3 class="text-3xl font-black text-white mt-4 relative z-10 drop-shadow-md" id="fin-bruto">R$ 0,00</h3>
+                            <div class="absolute bottom-4 left-0 right-0 text-[10px] font-bold text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity uppercase tracking-widest">Clique para detalhes</div>
+                        </div>
+                        
+                        <div onclick="abrirDetalhesCaixa('lucro')" class="cursor-pointer bg-slate-900/80 p-8 rounded-[2rem] border border-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.05)] hover:border-emerald-500/50 hover:shadow-[0_0_25px_rgba(16,185,129,0.15)] hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
+                            <div class="absolute -right-4 -top-4 text-emerald-500/10 text-8xl group-hover:scale-110 transition-transform">💎</div>
+                            <p class="text-xs text-emerald-400 font-black uppercase tracking-widest relative z-10">Lucro Líquido</p>
+                            <h3 class="text-3xl font-black text-white mt-4 relative z-10 drop-shadow-md" id="fin-lucro">R$ 0,00</h3>
+                            <div class="absolute bottom-4 left-0 right-0 text-[10px] font-bold text-emerald-500 opacity-0 group-hover:opacity-100 transition-opacity uppercase tracking-widest">Clique para detalhes</div>
+                        </div>
+                        
+                        <div onclick="abrirDetalhesCaixa('fundo')" class="cursor-pointer bg-slate-950 p-8 rounded-[2rem] border border-slate-700 shadow-[0_0_15px_rgba(0,0,0,0.3)] hover:border-slate-500 hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
+                            <div class="absolute -right-4 -top-4 text-white/5 text-8xl group-hover:scale-110 transition-transform">⚙️</div>
+                            <p class="text-xs text-slate-400 font-black uppercase tracking-widest relative z-10">Fundo Estoque</p>
+                            <h3 class="text-3xl font-black text-white mt-4 relative z-10 drop-shadow-md" id="fin-reinvest">R$ 0,00</h3>
+                            <div class="absolute bottom-4 left-0 right-0 text-[10px] font-bold text-slate-500 opacity-0 group-hover:opacity-100 transition-opacity uppercase tracking-widest">Clique para detalhes</div>
+                        </div>
+                        
+                        <div onclick="abrirDetalhesCaixa('fiados')" class="cursor-pointer bg-slate-900/80 p-8 rounded-[2rem] border border-orange-500/20 shadow-[0_0_15px_rgba(249,115,22,0.05)] hover:border-orange-500/50 hover:shadow-[0_0_25px_rgba(249,115,22,0.15)] hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
+                            <div class="absolute -right-4 -top-4 text-orange-500/10 text-8xl group-hover:scale-110 transition-transform">⏳</div>
+                            <p class="text-xs text-orange-400 font-black uppercase tracking-widest relative z-10">Valores a Receber</p>
+                            <h3 class="text-3xl font-black text-white mt-4 relative z-10 drop-shadow-md" id="fin-fiados">R$ 0,00</h3>
+                            <div class="absolute bottom-4 left-0 right-0 text-[10px] font-bold text-orange-500 opacity-0 group-hover:opacity-100 transition-opacity uppercase tracking-widest">Clique para detalhes</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="aba-fiados" class="aba-conteudo space-y-6 animate-fade-in">
+                <div class="bg-slate-800 p-8 rounded-[2rem] shadow-xl border border-slate-700 relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-red-500 to-rose-400 shadow-[0_0_15px_rgba(239,68,68,0.5)]"></div>
+                    
+                    <div id="painel-grid-fiados" class="animate-fade-in">
+                        <div class="flex flex-col md:flex-row justify-between items-center border-b border-slate-700 pb-8 mb-8 gap-4">
+                            <div class="flex items-center gap-4">
+                                <span class="bg-red-500/20 border border-red-500/30 text-red-400 p-3.5 rounded-2xl text-xl shadow-[0_0_15px_rgba(239,68,68,0.2)]">📒</span>
+                                <h2 class="text-3xl font-black text-white tracking-tight">Gestão de Fiados</h2>
+                            </div>
+                            <div class="relative w-full md:w-96">
+                                <span class="absolute left-4 top-4 text-slate-500">🔍</span>
+                                <input type="text" id="busca-cliente-fiado" oninput="renderizarListaClientesFiado()" placeholder="Procurar cliente devedor..." class="w-full bg-slate-900 border border-slate-700 p-4 pl-12 rounded-xl outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all font-medium text-white placeholder-slate-500">
+                            </div>
+                        </div>
+                        <div id="lista-clientes-fiado" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
+                    </div>
+
+                    <div id="painel-detalhe-fiado" class="hidden animate-fade-in">
+                        <div class="flex items-center gap-4 mb-8 border-b border-slate-700 pb-6">
+                            <button onclick="voltarListaFiados()" class="bg-slate-900 border border-slate-700 text-slate-300 px-6 py-3.5 rounded-xl font-bold hover:bg-slate-700 hover:text-white transition-all shadow-md flex items-center gap-2 group">
+                                <span class="group-hover:-translate-x-1 transition-transform">⬅</span> Voltar ao Painel
+                            </button>
+                        </div>
+                        
+                        <div class="bg-slate-900/50 rounded-[2rem] border border-slate-700 p-8 shadow-inner relative overflow-hidden">
+                            <div class="flex flex-col md:flex-row justify-between items-center border-b border-slate-700 pb-6 mb-8 gap-4 relative z-10">
+                                <div class="flex items-center gap-5">
+                                    <div class="w-16 h-16 rounded-2xl bg-red-500/20 border border-red-500/30 text-red-400 flex items-center justify-center font-black text-3xl shadow-[0_0_15px_rgba(239,68,68,0.2)]" id="fiado-avatar-letra">A</div>
+                                    <h2 class="text-3xl font-black text-white" id="fiado-nome-cliente">Nome do Cliente</h2>
+                                </div>
+                                <div class="text-right bg-slate-800 px-8 py-5 rounded-2xl border border-red-500/30 shadow-[0_0_20px_rgba(239,68,68,0.1)]">
+                                    <span class="text-xs font-black uppercase tracking-widest text-red-400 block mb-1">Dívida Ativa Total</span>
+                                    <span class="text-4xl font-black text-white drop-shadow-md" id="fiado-total-cliente">R$ 0,00</span>
+                                </div>
+                            </div>
+                            
+                            <form id="form-fiados-novo" class="grid grid-cols-1 md:grid-cols-4 gap-5 mb-10 bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-lg relative overflow-hidden z-10">
+                                <div class="absolute left-0 top-0 w-1.5 h-full bg-red-500"></div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-widest pl-2">Data</label>
+                                    <input required type="date" id="fiado-data" class="w-full bg-slate-900 border border-slate-700 p-4 rounded-xl outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 font-medium text-white">
+                                </div>
+                                <div class="relative">
+                                    <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-widest">Valor do Débito</label>
+                                    <span class="absolute left-4 top-[42px] font-bold text-red-500">R$</span>
+                                    <input required type="number" id="fiado-valor" step="0.01" placeholder="0.00" class="w-full bg-red-900/10 border-2 border-red-500/30 p-4 pl-12 rounded-xl outline-none focus:border-red-500 font-black text-red-400">
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-widest">Referente a...</label>
+                                    <input required id="fiado-descricao" placeholder="Descreva o produto/serviço..." class="w-full bg-slate-900 border border-slate-700 p-4 rounded-xl outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 font-medium text-white placeholder-slate-500">
+                                </div>
+                                <button type="submit" class="bg-red-600 text-white font-black rounded-xl md:col-span-4 py-4 hover:bg-red-500 shadow-[0_0_15px_rgba(220,38,38,0.4)] uppercase tracking-widest text-sm transition-all active:scale-95 mt-2">✚ Lançar Novo Débito Manual</button>
+                            </form>
+                            
+                            <div class="flex items-center gap-3 mb-6 relative z-10">
+                                <span class="text-xl text-slate-400">📄</span>
+                                <h3 class="font-black text-white uppercase tracking-widest text-sm">Histórico de Débitos Pendentes</h3>
+                            </div>
+                            
+                            <div class="overflow-x-auto bg-slate-800 rounded-2xl border border-slate-700 shadow-lg relative z-10">
+                                <table class="w-full text-left whitespace-nowrap">
+                                    <thead class="bg-slate-900/80 border-b border-slate-700">
+                                        <tr>
+                                            <th class="p-5 font-bold text-slate-400 text-xs uppercase tracking-widest">Data</th>
+                                            <th class="p-5 font-bold text-slate-400 text-xs uppercase tracking-widest">Descrição do Vale</th>
+                                            <th class="p-5 font-bold text-slate-400 text-xs uppercase tracking-widest text-right">Valor Pendente</th>
+                                            <th class="p-5 font-bold text-slate-400 text-xs uppercase tracking-widest text-center">Ações Rápidas</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="lista-fiados-cliente" class="divide-y divide-slate-700/50"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="modal-detalhes-caixa" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
+        <div class="bg-slate-800 rounded-[2rem] shadow-2xl shadow-black/50 w-full max-w-4xl flex flex-col overflow-hidden animate-fade-in border border-slate-700 relative">
+            <div class="p-8 border-b border-slate-700 flex justify-between items-center bg-slate-900/50 relative z-10">
+                <div class="flex items-center gap-5">
+                    <div id="icone-detalhe-caixa" class="w-14 h-14 bg-slate-800 border border-slate-700 rounded-2xl flex items-center justify-center text-3xl shadow-inner">📊</div>
+                    <div>
+                        <h2 class="text-2xl font-black text-white tracking-tight" id="titulo-detalhe-caixa">Detalhes</h2>
+                        <p class="text-sm text-slate-400 font-bold mt-1" id="subtitulo-detalhe-caixa">Histórico detalhado dos valores</p>
+                    </div>
+                </div>
+                <button onclick="fecharDetalhesCaixa()" class="w-12 h-12 flex items-center justify-center bg-slate-800 border border-slate-600 rounded-full text-slate-400 hover:text-white hover:border-red-500 hover:bg-red-500/20 hover:shadow-[0_0_15px_rgba(239,68,68,0.4)] transition-all font-bold text-xl">✕</button>
+            </div>
+            <div class="p-0 overflow-y-auto max-h-[60vh] bg-slate-900/30 relative">
+                <table class="w-full text-left whitespace-nowrap">
+                    <thead class="bg-slate-900 sticky top-0 border-b border-slate-700 shadow-md z-10">
+                        <tr>
+                            <th class="p-5 pl-8 font-black text-slate-500 text-xs uppercase tracking-widest">Data</th>
+                            <th class="p-5 font-black text-slate-500 text-xs uppercase tracking-widest w-full">Referência / Cliente</th>
+                            <th class="p-5 pr-8 font-black text-slate-500 text-xs uppercase tracking-widest text-right">Valor</th>
+                        </tr>
+                    </thead>
+                    <tbody id="lista-detalhes-caixa" class="divide-y divide-slate-800 text-slate-200"></tbody>
+                </table>
+            </div>
+            <div class="p-8 border-t border-slate-700 bg-slate-900/80 flex justify-between items-center shadow-[inset_0_10px_20px_rgba(0,0,0,0.2)]">
+                <span class="font-black text-slate-500 uppercase tracking-widest text-sm flex items-center gap-3"><span class="text-blue-500">➔</span> Total Listado</span>
+                <span id="total-detalhe-caixa" class="text-4xl font-black text-white drop-shadow-md">R$ 0,00</span>
+            </div>
+        </div>
+    </div>
+    
+    <div id="modal-os" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
+        <div class="bg-slate-800 rounded-[2rem] shadow-2xl shadow-black/50 w-full max-w-3xl flex flex-col overflow-hidden animate-fade-in border border-slate-700">
+            <div class="p-6 border-b border-slate-700 flex justify-between items-center bg-slate-900/50">
+                <div>
+                    <h2 class="text-2xl font-black text-white tracking-tight" id="modal-titulo">Detalhes da Ordem</h2>
+                    <p class="text-sm text-slate-400 font-bold mt-1" id="modal-subtitulo"></p>
+                </div>
+                <button onclick="fecharModalOS()" class="w-10 h-10 flex items-center justify-center bg-slate-800 border border-slate-600 rounded-full text-slate-400 hover:text-white hover:border-red-500 hover:bg-red-500/20 transition-all font-bold">✕</button>
+            </div>
+            <div class="p-8 space-y-8 overflow-y-auto max-h-[70vh] bg-slate-900/30">
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-widest">Relatório Técnico / Executado</label>
+                        <textarea id="modal-executado" rows="4" class="w-full bg-slate-900 border border-slate-700 p-4 rounded-xl resize-none outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all shadow-inner text-white placeholder-slate-600" placeholder="Descreva os procedimentos..."></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-widest">Observações / Senhas</label>
+                        <textarea id="modal-obs" rows="4" class="w-full bg-amber-900/10 border border-amber-700/50 p-4 rounded-xl resize-none outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-all shadow-inner text-amber-200 placeholder-amber-700/50" placeholder="Anotações, senhas..."></textarea>
+                    </div>
+                </div>
+                <div class="border border-slate-700 rounded-2xl p-6 bg-slate-800/50 shadow-inner">
+                    <h3 class="font-black text-white border-b border-slate-700 mb-5 pb-3 text-sm uppercase tracking-widest flex items-center gap-3"><span class="bg-slate-700 p-2 rounded-xl text-lg">📦</span> Peças Extras Utilizadas</h3>
+                    <div class="flex flex-col md:flex-row gap-3 mb-5 relative">
+                        <div class="flex-1 relative">
+                            <input type="text" id="os-edit-busca-input" oninput="filtrarProdutosEditOS(this.value)" placeholder="Pesquisar nova peça..." class="w-full bg-slate-900 border border-slate-700 p-4 rounded-xl outline-none focus:border-blue-500 transition-all text-white placeholder-slate-500">
+                            <div id="os-edit-sugestoes" class="absolute left-0 right-0 top-full mt-2 bg-slate-800 border border-slate-600 shadow-2xl z-[60] hidden max-h-40 overflow-y-auto rounded-xl"></div>
+                        </div>
+                        <input type="number" id="modal-qtd-produto" value="1" min="1" step="0.01" placeholder="QTD" class="w-full md:w-24 bg-slate-900 border border-slate-700 p-4 rounded-xl outline-none focus:border-blue-500 transition-all font-bold text-white text-center">
+                        <div class="relative w-full md:w-36">
+                            <span class="absolute left-4 top-4 font-bold text-blue-500 text-sm">R$</span>
+                            <input type="number" id="modal-valor-produto" step="0.01" placeholder="Unit." class="w-full bg-slate-900 border border-slate-700 p-4 pl-10 rounded-xl font-black text-blue-400 outline-none focus:border-blue-500 transition-all">
+                        </div>
+                        <button onclick="adicionarProdutoNaOS()" class="bg-blue-600 text-white px-8 py-4 rounded-xl font-black hover:bg-blue-500 transition-all shadow-[0_0_15px_rgba(37,99,235,0.4)] active:scale-95 text-sm uppercase tracking-wider">ADD</button>
+                    </div>
+                    <ul id="modal-lista-produtos" class="space-y-3"></ul>
+                </div>
+                <div class="flex flex-col md:flex-row gap-6 border-t border-slate-700 pt-8">
+                    <div class="flex-1 bg-slate-800 p-6 rounded-2xl border border-blue-500/20 shadow-lg">
+                        <label class="block text-xs font-black text-blue-400 uppercase tracking-widest mb-2">Valor Total da OS (R$)</label>
+                        <input type="number" id="modal-valor-total" step="0.01" class="font-black text-4xl text-white outline-none w-full bg-transparent">
+                    </div>
+                    <div class="flex-1 bg-emerald-900/20 p-6 rounded-2xl border border-emerald-500/30 shadow-lg relative overflow-hidden">
+                        <div class="absolute -right-4 -bottom-4 text-emerald-500/10 text-8xl">💰</div>
+                        <label class="block text-xs font-black text-emerald-400 uppercase tracking-widest mb-2 relative z-10">Recebido Agora (R$)</label>
+                        <input type="number" id="modal-pago-hora" step="0.01" placeholder="0.00" class="bg-transparent font-black text-4xl text-emerald-300 outline-none w-full relative z-10 placeholder-emerald-700/50">
+                    </div>
+                </div>
+            </div>
+            <div class="p-6 border-t border-slate-700 flex flex-col sm:flex-row justify-end gap-4 bg-slate-900/80">
+                <button onclick="salvarModalOS('Em Andamento')" class="px-8 py-4 rounded-xl font-bold bg-slate-800 border border-slate-600 text-white hover:bg-slate-700 transition-all uppercase tracking-widest text-sm shadow-md">Salvar Parcial</button>
+                <button onclick="salvarModalOS('Concluído')" class="px-8 py-4 rounded-xl font-black bg-emerald-600 text-white shadow-[0_0_20px_rgba(16,185,129,0.4)] hover:shadow-[0_0_30px_rgba(16,185,129,0.6)] hover:-translate-y-1 transition-all uppercase tracking-widest">✔ Finalizar Ordem</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-baixa" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-md z-[60] flex items-center justify-center p-4">
+        <div class="bg-slate-800 rounded-[2rem] shadow-2xl shadow-black/50 w-full max-w-md flex flex-col overflow-hidden animate-fade-in border border-slate-700">
+            <div class="p-6 border-b border-slate-700 flex justify-between items-center bg-slate-900/50">
+                <h2 class="text-xl font-black text-white flex items-center gap-3"><span class="text-2xl text-emerald-400">💸</span> Abater Dívida</h2>
+                <button onclick="fecharModalBaixa()" class="w-10 h-10 flex items-center justify-center bg-slate-800 border border-slate-600 rounded-full text-slate-400 hover:text-white hover:border-red-500 hover:bg-red-500/20 transition-all font-bold">✕</button>
+            </div>
+            <div class="p-8 space-y-6 bg-slate-900/30">
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-widest">Total Acumulado Neste Item (R$)</label>
+                    <input type="text" id="baixa-total-divida" disabled class="w-full border border-slate-700 bg-slate-800 p-4 rounded-xl font-black text-slate-500 text-xl shadow-inner">
+                </div>
+                <div>
+                    <label class="block text-xs font-black text-emerald-400 mb-2 uppercase tracking-widest">Valor Sendo Pago Agora (R$)</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-4 font-black text-emerald-500 text-xl">R$</span>
+                        <input type="number" id="baixa-valor-pago" step="0.01" class="w-full bg-emerald-900/10 border-2 border-emerald-500/30 p-4 pl-14 rounded-xl font-black text-3xl text-emerald-300 outline-none focus:border-emerald-400 focus:bg-emerald-900/20 transition-all shadow-inner">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-widest">Descrição do Pagamento</label>
+                    <input type="text" id="baixa-descricao" class="w-full bg-slate-900 border border-slate-700 p-4 rounded-xl outline-none focus:border-blue-500 font-medium text-white transition-all" placeholder="Ex: PIX recebido hoje">
+                </div>
+                <div class="flex items-center gap-4 mt-6 bg-slate-800 p-5 rounded-2xl border border-slate-600 cursor-pointer hover:bg-slate-700 transition-colors shadow-md" onclick="document.getElementById('baixa-lancar-venda').click()">
+                    <input type="checkbox" id="baixa-lancar-venda" checked class="w-6 h-6 accent-blue-500 cursor-pointer pointer-events-none">
+                    <label class="text-sm font-bold text-slate-300 cursor-pointer pointer-events-none select-none">Registrar dinheiro no Caixa das Vendas?</label>
+                </div>
+            </div>
+            <div class="p-6 border-t border-slate-700 flex gap-4 bg-slate-900/80">
+                <button onclick="fecharModalBaixa()" class="flex-1 py-4 rounded-xl font-bold bg-slate-800 border border-slate-600 text-slate-300 hover:bg-slate-700 transition-all uppercase tracking-widest text-sm">Cancelar</button>
+                <button onclick="confirmarBaixaFiado()" class="flex-[2] py-4 rounded-xl font-black bg-emerald-600 text-white hover:bg-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.4)] hover:-translate-y-1 transition-all uppercase tracking-widest text-sm">Confirmar Pagamento</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-senha" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
+        <div class="glass-panel rounded-[2.5rem] shadow-2xl shadow-red-900/20 w-full max-w-sm p-10 text-center border-t-[6px] border-red-500 animate-fade-in relative overflow-hidden">
+            <div class="absolute -right-10 -top-10 text-red-500/10 text-9xl pointer-events-none">🔒</div>
+            <h2 class="text-3xl font-black mb-2 text-white relative z-10 tracking-tight">Área Restrita</h2>
+            <p class="text-slate-400 font-medium mb-8 text-sm relative z-10">Digite a senha financeira mestra</p>
+            <input type="password" id="input-senha" onkeypress="if(event.key === 'Enter') verificarSenha()" class="w-full bg-slate-900 border border-slate-700 p-5 rounded-2xl text-center text-3xl font-black outline-none focus:bg-slate-800 focus:border-red-500 focus:ring-2 focus:ring-red-500/50 transition-all mb-8 relative z-10 text-white tracking-[0.5em]" placeholder="••••">
+            <div class="flex gap-4 relative z-10">
+                <button onclick="fecharModalSenha()" class="flex-1 py-4 bg-slate-800 text-slate-300 rounded-xl font-bold hover:bg-slate-700 transition-all border border-slate-600">Voltar</button>
+                <button onclick="verificarSenha()" class="flex-[2] py-4 bg-red-600 text-white rounded-xl font-black shadow-[0_0_20px_rgba(220,38,38,0.4)] hover:shadow-[0_0_30px_rgba(220,38,38,0.6)] hover:-translate-y-1 transition-all uppercase tracking-widest">Desbloquear</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="script.js"></script>
+</body>
+</html>
